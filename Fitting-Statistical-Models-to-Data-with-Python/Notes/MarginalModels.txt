@@ -1,0 +1,90 @@
+Marginal Models
+
+General class of statistical models used to model dependent data, where observations within a randomly sampled cluster may be correlated. We're interested in the estimation of overall, population-averaged relationships between independent variables and dependent variables across all clusters.
+
+In marginal models, we don't include random effects, because we aren't interested in estimating between-cluster variance in coefficients (i.e. we don't allow coefficients to randomly vary across clusters, what it was the key feature of multilevel models).
+
+When Can We Fit Marginal Models?
+
+	When we have data from a longitudinal or clustered study desing that introduces dependencies in the collected data, and we need to model those dependencies to obtain accurate inferences about relationships of interest. 
+	
+	When we have no interest in estimating between-subject or between-cluster variance in the coefficients of interest.
+	
+	When we wish to make inference about overall, marginal relationships between independent and dependent variables in the target population, we don't wish to condition on random effects of subjects or clusters in the modeling.
+
+Recall that multilevel models capture dependencies by allowing coefficients to randomly vary across clusters. Instead, marginal models simply look at overall relationships across clusters, and make sure that standard errors reflect dependencies.
+
+The general idea behind marginal models is:
+
+	1) Explicitly select a structure for the mean of the dependent variable, usually defined by regression coefficients and predictor variables (linear combination of the predictors).
+	
+	2) Select structure that makes sense for the variances and covariances of observations coming from the same cluster that aren't explained by the select predictors.
+	
+	3) Compare the fits of models with different choices for this variance-covariance structure, and choose the best fit.
+	
+Unexplained error in the measures of the dependent variables within a subject might follow an auto-regressive covariance structure, i.e. errors close to each other in time have stronger correlation than errors farther apart, and observations have constant variance over time.
+
+	Note: This is just one possible covariant structure that we could consider for the data.
+	
+For clustered data, we might assume that errors within a cluster follow an exchangeable covariance structure (constant variance and covariance, any two observations that you look at within a randomly sampled cluster are going to have the same correlation).
+
+These models has several advantages over other approaches for dependent data.
+
+	1) Quicker computational times.
+	
+	3) Robust standard errors that reflect the specified correlation structure.
+	
+	2) Easier accommodation of non-normal outcomes.
+
+Marginal Linear Regression Models
+
+When fitting marginal models to normal dependent variables, estimate parameters definded by this model:
+
+	y_{ti} = \beta_0 + \beta_1 x_{1ti} + ... + \beta_p x_{pti} + e_{ti}
+	
+	y_{i} = (y_{1i, y_{2i}, ..., y_{ni}})' ~ N(XiB, Vi)
+
+		where the vector of observations yi follows a normal distribution with a mean defined by the linear combination XiB, with a variance-covariance structure defined by Vi. 
+		
+Unlike standard linear regression, we allow observations from the same cluster to have a nonzero covariance in that Vi matrix. An important part of fitting these models is choosing a structure for that matrix.
+		
+Generalized Estimating Equations as a Technique for Fitting Marginal Models
+
+When fitting models to dependent data using Generalized Estimating Equations (GEE), we seek estimates of parameters that solve the following score function:
+
+	S(\beta) = \sum_{i = 1}^{n} D_{i}^{T} V_{i}^{-1} (y_i - \mu_i) = 0
+		
+We like to specify a Vi matrix, but we seldom know what it actually is. So in practice, we attempt to define a working correlation matrix (plausible guess for true structure). 
+
+A good property when using GEE is that our estimators of the fixed effect parameters are consistent even if we miss specify that working correlation matrix. If we choose a correlation matrix, but it's actually not close to the true correlation matrix, we're still going to get good consistent estimates of our regression parameters. Bad choices of that working correlation matrix (i.e. dependency within the i cluster), affect the standard errors, not the estimates of the fixed effect parameters. 
+
+Choices for Working Correlation Matrix in Models Fitted Using GEE
+
+	Independence - zero correlation, independent observations. (why we're eve using GEE in the first place if we think observations are independent within a given cluster).
+	
+	Exchangeable - constant correlation of observations in the same cluster.
+	
+	First-Order Auto-Regressive (AR(1)) - decaying correlation over time.
+	
+	Unstructured - completely general correlations of observations (i.e. any given pair of observations from the same cluster is going to have a unique correlation).
+	
+Recall that we're not focused primarily on making inferences about these correlations, whether we choose an exchangeable structure or a first-order autoregressive structure, we're really focused not on the estimates of the correlations, but rather on the fixed effects and making inference about those fixed effects. It's primarily to capture dependency within the same cluster, so that we make reasonable inferences about our fixed effects that reflect that dependency of observations within the same cluster.
+
+With large datasets, choices of working correlation matrix don't make large difference, but should still be considered based on information criteria.
+
+Marginal Logistic Regression Models
+
+GEE methods were specifically designed to readily accommodate non-normal outcome variables measured longitudinally. 
+
+Given a binary dependent variable, its mean is the probability that the dependent variable is equal to 1, as follows:
+
+	\mu_{ti} = E(y_{ti} | X_{ti}) = exp(X_{ti}B) / 1 + exp(X_{ti}B)
+
+		expected value of the dependent variable y conditional on the values of the predictor variables.
+
+And the variance is given by:
+
+	var = \mu_{ti} * (1 - \mu_{ti})
+
+Both means and variances of the dependent variable are defined by the specified model.
+

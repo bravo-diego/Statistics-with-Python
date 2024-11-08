@@ -1,0 +1,64 @@
+Multilevel Models
+
+General class of statistical models to model dependent data, where observations within a randomly sampled cluster may be correlated with each other.
+
+In this class of models we still estimate regression parameters describing overall relationships of predictors with outcomes, but we go beyond estimating the variability of those coefficients across these clusters that have been randomly sampled at higher levels. So in addition to estimating overall relationships, we also estimate parameters that describe the variability of those relationships across these higher-level clusters. 
+
+What changes allow coefficients to randomly vary? The inclusion of random effects of these higher-level randomly samples clusters in the model. 
+
+	Level One Eq.
+	
+		y_{ij} = \beta_{0j} + \beta_{1j} x_{1ij} + e_{ij}
+		
+			regression function for the observations at level one.
+		
+	We have a dependent variable y wich is defined for a given observation i nested within cluster j. Note how regression coefficients are now determined by what cluster j we're referring to. They randomly vary depending on the cluster j (random coefficients). We have a error term associated with observation i with in cluster j. This y_{ij} values could be subjects in a clustered study or it could be repeated measurements in a study where we're collecting repeated measurements over time from the same subject.
+	
+	Level Two Eq.
+	
+		\beta_{0j} = \beta_{0} + u_{0j}
+		
+		\beta_{1j} = \beta_{1} + u_{1j}
+		
+	These are equations for those random coefficients at level one. Note that we have a unique eq. for beta zero j and we have a unique eq. for beta one j. Both intercepts specifics to cluster j beta 0 and beta 1  are the regression parameters. These are the fixed parameters that we're trying to estimate, but we add a random effect (u term). That u term is what allows each cluster denoted by j to have unique coefficients. 
+	
+	These random effects are random variables. Values for different clusters assumed to be random from a normal distribution ~N(0, var). We are interested in estimating that unknown variance.
+	
+Observations coming from same clusters are correlated with each other statistically. The random effects allow us to model the correlation, these random effects capture between-cluster variability. While the error terms at the level one eq. capture the within cluster variability.
+
+Multilevel Linear Regression Models
+
+For a continuous dependent variable Y, measured on person i within cluster j
+
+	y_{ij} = \beta_0 + \beta_1 x_{1ij} + u_{0j} + u_{1j} x_{1ij} + e_{ij}
+
+where beta values are the fixed effects, u terms are the random effects, and e is the error term.
+
+The fixed effects are the regression coefficients or regression parameters, i.e. unknown constants defining relationships between predictors and dependent variables that we wish to estimate.
+
+The random effects are random variables, we assume that the random effects follow a normal distribution with an overall mean of zero and specified variances and covariances. In the particular model defined above we have two random effects, u_{0j} and u_{1j}, which allows for a unique intercept and a unique slope for each cluster, respectively. 
+
+Multilevel Logistic Regression Models
+
+Multilevel model for binary dependent variable Y, measured on person i within cluster j.
+
+	logit[P(y_{ij} = 1)] = \beta_{0} + \beta_{1} x_{1ij} + u_{0j} + u_{1j} x_{1ij}
+	
+Same distributional assumptions about random cluster effects; normally distributed, mean vector 0, unique variances and covariances. 
+
+When fitting multilevel models to non-normal outcomes it's more difficult to write likelihood function. Instead we approximate the likelihood function and find parameters that maximize this approximated likelihood.  One approach is the adaptive Gaussian Quadrature. 
+
+When we fit multilevel models, our goal is often to explain variation in your outcome variable that occurs at different levels:
+
+	Respondent Level (or Level 1): Variation between individual respondents within clusters.
+	
+	Cluster Level (or Level 2): Variation between clusters themselves.
+
+If we're comparing two multilevel models to see how introducing or changing cluster-level fixed effects influences the variance components, you need to ensure consistency in your models.
+
+	1) Both models should include the same predictors measured at the respondent level. This ensures that the comparison focuses on how the cluster-level variables explain variance, without interference from changes at the respondent level.
+
+	2) Both models should be fit using the exact same dataset (i.e. same no. of respondents) to mantain a fair comparison. 
+	
+By keeping respondent-level fixed effects the same, we isolate the impact of adding or changing cluster-level fixed effects on the variance components. Thus any observed differences in the explained variance can be attributed to the new cluster-level variables rather than changes in the respondnt-level predictors.
+
