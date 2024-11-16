@@ -15,6 +15,6 @@ This specialization is designed to teach learners beginning and intermediate con
   
 - __Course 3__ - Fitting Statistical Models to Data with Python
   
-  ***
+***
 
   _Note: This repository is intended to showcase work completed in pursuit of a professional certificate as part of a professional portfolio. This code is not intended for redistribution, and the original author of this repository is not responsible for any academic penalties or other damages incurred from plagiarized code._
